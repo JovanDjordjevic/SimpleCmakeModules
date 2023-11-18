@@ -1,6 +1,8 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
 set(SCM_MINIMUM_ALLOWED_GCC_VERSION "9.0")
+set(SCM_MINIMUM_ALLOWED_CLANG_VERSION "10.0")
+set(SCM_MINIMUM_ALLOWED_MSVC_VERSION "19.0")
 
 # =======================================================================================================================================
 # ============================================================= GCC OPTIONS =============================================================
@@ -112,6 +114,22 @@ set(SCM_GCC_13_OPTIONS
 #      -Wunsafe-loop-optimizations      # Warn if the loop cannot be optimized because the compiler could not assume anything on the bounds of the loop indices
     
 
+# =======================================================================================================================================
+# ============================================================ CLANG OPTIONS ============================================================
+# =======================================================================================================================================
+
+set(SCM_CLANG_10_OPTIONS
+    -Weverything
+)
+
+# =======================================================================================================================================
+# ============================================================ MSVC OPTIONS =============================================================
+# =======================================================================================================================================
+
+set(SCM_MSVC_19_OPTIONS
+    /W4
+)
+
 function(add_brutal_compiler_options TARGET_NAME)
     if(TARGET ${TARGET_NAME})
         if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -139,11 +157,23 @@ function(add_brutal_compiler_options TARGET_NAME)
 
             message(STATUS "Detected Clang compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
 
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
+            else()
+                message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
+            endif()
+
             target_compile_options(${TARGET_NAME} PRIVATE ${SCM_CLANG_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
             set(SCM_MSVC_COMPILE_OPTIONS)
 
             message(STATUS "Detected MSVC compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
+
+            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.0.0")
+                list(APPEND SCM_MSVC_COMPILE_OPTIONS ${SCM_MSVC_19_OPTIONS})
+            else()
+                message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
+            endif()
 
             target_compile_options(${TARGET_NAME} PRIVATE ${SCM_MSVC_COMPILE_OPTIONS})
         else()
