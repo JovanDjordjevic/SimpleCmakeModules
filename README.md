@@ -13,7 +13,7 @@ A collection of cmake modules I made.These include:
   # In your CmakeLists.txt
 
   ...
-  set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)   # or which ever folder you will store the `brutal-compiler-options.cmake``
+  set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)   # or which ever folder you will store the `brutal-compiler-options.cmake` file
   ...
 
   ...
@@ -31,4 +31,25 @@ A collection of cmake modules I made.These include:
   ...
 
   # This will cause `yourLib` and `yourExe` to be compiled with additional warning options determined by your compiler version
+  ```
+
+- `doxy` - Module for creating a `docs` target that will generate doxygen documentation. Requires `doxygen` to be present on the system.
+
+  Usage example:
+
+  ```cmake
+  # In your CmakeLists.txt
+
+  ...
+  set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)   # or which ever folder you will store the `doxy.cmake` file
+  ...
+
+  ...
+  include(doxy)
+  create_docs_target(${CMAKE_SOURCE_DIR}/docs) # or which ever folder the Doxyfile is located in
+  ...
+
+  # This will create the `docs` target that can be manually built with:
+  #     cmake --build . --target docs
+  # Documentation will be created in the folder specified when calling create_docs_target(...) function
   ```

@@ -1,6 +1,8 @@
 TODO.txt
 
 build/
+docs/html/
+docs/latex/
 
 CMakeLists.txt.user
 CMakeCache.txt

@@ -24,3 +24,6 @@ include(brutal-compiler-options)
 
 add_executable(main main.cpp)
 add_brutal_compiler_options(main)
+
+include(doxy)
+create_docs_target(${CMAKE_SOURCE_DIR}/docs)
