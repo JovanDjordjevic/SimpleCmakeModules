@@ -1,8 +1,10 @@
+# SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
-set(MINIMUM_ALLOWED_GCC_VERSION "9.0")
+set(SCM_MINIMUM_ALLOWED_GCC_VERSION "9.0")
 
-# for gcc 9.x
-set(GCC_9_OPTIONS
+# for gcc 9.x. These options will always be included, and when a greater compiler version is detected,
+# the flags added in that version will be appended to this list
+set(SCM_GCC_9_OPTIONS
     -Werror # Make all warnings into errors.
     -Wfatal-errors # This option causes the compiler to abort compilation on the first error occurred rather than trying to keep going and printing further error messages.
 
@@ -104,12 +106,7 @@ set(GCC_9_OPTIONS
 
 )
 
-set(GCC_10_OPTIONS -Wall)
-
-
-
-set(CLANG_OPTIONS_BRUTAL -Wall)
-set(MSVC_OPTIONS_BRUTAL /Wx)
+set(SCM_GCC_10_OPTIONS -Wall)
 
 
 
@@ -117,25 +114,31 @@ set(MSVC_OPTIONS_BRUTAL /Wx)
 function(add_brutal_compiler_options TARGET_NAME)
     if(TARGET ${TARGET_NAME})
         if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-            set(GCC_COMPILE_OPTIONS)
+            set(SCM_GCC_COMPILE_OPTIONS)
 
-            message(STATUS "Detected GNU compiler, version " ${CMAKE_CXX_COMPILER_VERSION})
+            message(STATUS "Detected GNU compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
 
-            # Check if the compiler version is greater than or equal to the minimum required version
             if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0.0")
-                list(APPEND GCC_COMPILE_OPTIONS ${GCC_9_OPTIONS})
+                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_9_OPTIONS})
             elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
-                list(APPEND GCC_COMPILE_OPTIONS ${GCC_10_OPTIONS})
+                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_10_OPTIONS})
             else()
-                message(FATAL_ERROR "Error: Compiler version must be at least 9.0.0")
+                message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
             endif()
 
             target_compile_options(${TARGET_NAME} PRIVATE ${GCC_COMPILE_OPTIONS})
-
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-            target_compile_options(${TARGET_NAME} PRIVATE ${CLANG_OPTIONS_BRUTAL})
+            set(SCM_CLANG_COMPILE_OPTIONS)
+
+            message(STATUS "Detected Clang compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
+
+            target_compile_options(${TARGET_NAME} PRIVATE ${SCM_CLANG_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-            target_compile_options(${TARGET_NAME} PRIVATE ${MSVC_OPTIONS_BRUTAL})
+            set(SCM_MSVC_COMPILE_OPTIONS)
+
+            message(STATUS "Detected MSVC compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
+
+            target_compile_options(${TARGET_NAME} PRIVATE ${SCM_MSVC_COMPILE_OPTIONS})
         else()
             message("Compiler: Unknown or unsupported compiler")
         endif()
@@ -144,12 +147,3 @@ function(add_brutal_compiler_options TARGET_NAME)
         message("Error: Target '${TARGET_NAME}' not found.")
     endif()
 endfunction()
-
-
-
-
-set(GCC_OPTIONS_REASONABLE -Wall)
-
-set(CLANG_OPTIONS_REASONABLE -Wall)
-
-set(MSVC_OPTIONS_REASONABLE /Wx)
