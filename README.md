@@ -1,2 +1,2 @@
 # SimpleCmakeModules
-A collection of cmake modulles I made
+A collection of cmake modules I made
