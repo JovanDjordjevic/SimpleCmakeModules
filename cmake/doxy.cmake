@@ -1,3 +1,5 @@
+# SCM_ prefix is used to mark variables that come from SimpleCmakeModules
+
 function(create_docs_target SCM_FOLDER_WITH_DOXYFILE)
     find_package(Doxygen)
 

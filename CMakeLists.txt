@@ -27,3 +27,6 @@ add_brutal_compiler_options(main)
 
 include(doxy)
 create_docs_target(${CMAKE_SOURCE_DIR}/docs)
+
+include(grind)
+create_grind_target(main)

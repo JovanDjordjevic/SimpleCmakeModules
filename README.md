@@ -2,7 +2,7 @@
 
 A collection of cmake modules I made.These include:
 
-- `brutal-compiler-options` - Module for enabling most of the warning/error flags during compilation (a lot of them are not enabled with default `-Wall -Wextra` that is commonly used). Currently supported compilers:
+- `brutal-compiler-options` - Module for enabling most of the warning/error flags during compilation (a lot of them are not enabled with default `-Wall -Wextra` that is commonly used) for a specified target executable or library. Currently supported compilers:
   - **GNU ver >= 9.0** (compile options for different GCC versions can be found [here](https://gcc.gnu.org/onlinedocs/))
   - **Clang ver >= 10.0**
   - **MSVC ver >= 19.0**
@@ -52,4 +52,26 @@ A collection of cmake modules I made.These include:
   # This will create the `docs` target that can be manually built with:
   #     cmake --build . --target docs
   # Documentation will be created in the folder specified when calling create_docs_target(...) function
+  ```
+
+- `grind` - Module running callgrind and then kcachegrind for a specific target. Requires `valgrind` and `kcachegrind` to be present on the system.
+
+  Usage example:
+
+  ```cmake
+  ...
+  set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)   # or which ever folder you will store the `grind.cmake` file
+  ...
+
+  ...
+  include(grind)
+  ...
+
+  ...
+  add_executable(yourExe yourExeSources)
+  create_grind_target(yourExe)
+  ...
+
+  # This will create the `yourExe-grind` target that can be manually built with:
+  #     cmake --build . --target yourExe-grind
   ```

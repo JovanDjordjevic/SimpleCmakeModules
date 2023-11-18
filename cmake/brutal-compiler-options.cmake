@@ -130,8 +130,8 @@ set(SCM_MSVC_19_OPTIONS
     /W4
 )
 
-function(add_brutal_compiler_options TARGET_NAME)
-    if(TARGET ${TARGET_NAME})
+function(add_brutal_compiler_options SCM_TARGET_NAME)
+    if(TARGET ${SCM_TARGET_NAME})
         if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             set(SCM_GCC_COMPILE_OPTIONS)
 
@@ -151,7 +151,7 @@ function(add_brutal_compiler_options TARGET_NAME)
                 message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
             endif()
 
-            target_compile_options(${TARGET_NAME} PRIVATE ${SCM_GCC_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_GCC_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(SCM_CLANG_COMPILE_OPTIONS)
 
@@ -163,7 +163,7 @@ function(add_brutal_compiler_options TARGET_NAME)
                 message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
             endif()
 
-            target_compile_options(${TARGET_NAME} PRIVATE ${SCM_CLANG_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_CLANG_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
             set(SCM_MSVC_COMPILE_OPTIONS)
 
@@ -175,12 +175,12 @@ function(add_brutal_compiler_options TARGET_NAME)
                 message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
             endif()
 
-            target_compile_options(${TARGET_NAME} PRIVATE ${SCM_MSVC_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_MSVC_COMPILE_OPTIONS})
         else()
             message("Compiler: Unknown or unsupported compiler")
         endif()
         
     else()
-        message("Error: Target '${TARGET_NAME}' not found.")
+        message("Error: Target '${SCM_TARGET_NAME}' not found.")
     endif()
 endfunction()
