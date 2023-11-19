@@ -12,8 +12,6 @@ set(SCM_MINIMUM_ALLOWED_MSVC_VERSION "19.0")
 # the flags added in that version will be appended to this list (added flags are ones that are not enabled 
 # by -Wall, -Wextra or any other flags in that specific compiler version)
 set(SCM_GCC_9_OPTIONS
-    -Werror                             # Make all warnings into errors.
-    -Wfatal-errors                      # This option causes the compiler to abort compilation on the first error occurred rather than trying to keep going and printing further error messages.
     -Wall                               # This enables all the warnings about constructions that some users consider questionable, and that are easy to avoid 
     -Wextra                             # This enables some extra warning flags that are not enabled by -Wall.
     -pedantic-errors                    # Issue all the warnings demanded by strict ISO C and ISO C ++. Like -pedantic, except that errors are produced rather than warnings
@@ -118,8 +116,257 @@ set(SCM_GCC_13_OPTIONS
 # ============================================================ CLANG OPTIONS ============================================================
 # =======================================================================================================================================
 
+# for clang 10.x. These options will always be included, and when a greater compiler version is detected,
+# the flags added in that version will be appended to this list (added flags are ones that are not enabled 
+# by -Wall, -Wextra or any other flags in that specific compiler version)
 set(SCM_CLANG_10_OPTIONS
-    -Weverything
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Wabstract-vbase-init    # warning: initializer for virtual base class A of abstract class B will never be used
+    -Walloca
+    -Wanon-enum-enum-conversion         # warn about operations between different enum types
+    -Warc-repeated-use-of-weak
+    -Warc-maybe-repeated-use-of-weak
+    -Warray-bounds-pointer-arithmetic
+    -Wassign-enum                       # 
+    -Watomic-implicit-seq-cst
+    -Wauto-import
+    -Wbad-function-cast
+    -Wbind-to-temporary-copy
+    -Wbitfield-enum-conversion
+    -Wbitwise-op-parentheses
+    -Wbool-conversions
+    -Wcast-align
+    -Wcast-qual
+    -Wchar-subscripts
+    # -Wcomma    # possible misuse of comma operator???
+    -Wcomment
+    -Wcomplex-component-init   # complex initialization specifying real and imaginary components is an extension ?
+    -Wconditional-uninitialized 
+    -Wconsumed
+    -Wconversion
+    -Wconversion-null
+    -Wcoroutine-missing-unhandled-exception
+    # -Wcovered-switch-default # default label in switch that covers all enumeration values
+    -Wcstring-format-directive
+    -Wctad-maybe-unsupported
+    -Wcustom-atomic-properties #?
+    -Wdate-time #? MOZDA PREVISE?
+    -Wdelete-non-abstract-non-virtual-dtor
+    -Wdeprecated-copy
+    -Wdeprecated-copy-dtor
+    -Wdeprecated-dynamic-exception-spec
+    -Wdeprecated-implementations
+    -Wdeprecated-this-capture
+    -Wdirect-ivar-access # instance variable A id being directly accessed???? STA JE OVO
+    -Wdisabled-macro-expansion
+    -Wdocumentation # MOZDA PREVISE? ovo je da baca warninge kad neka dokumentacija nije dobro napisana?
+    -Wduplicate-decl-specifier
+    -Wduplicate-enum
+    -Wduplicate-method-arg
+    -Wduplicate-method-match
+    -Weffc++
+    -Wembedded-directive
+    -Wempty-init-stmt
+    -Wempty-translation-unit
+    -Wenum-conversion
+    -Wenum-enum-conversion
+    -Wenum-float-conversion
+    -Wexit-time-destructors
+    -Wexpansion-to-defined
+    -Wexplicit-ownership-type
+    -Wextra-semi
+    -Wextra-semi-stmt
+    -Wfixed-enum-extension
+    -Wflexible-array-extensions
+    -Wfloat-conversion
+    -Wfloat-equal
+    -Wfloat-overflow-conversion
+    -Wfloat-zero-conversion
+    -Wfor-loop-analysis
+    -Wformat=2
+    -Wformat-non-iso #STA JE OVO?
+    -Wformat-nonliteral
+    -Wformat-pedantic
+    -Wformat-type-confusion
+    -Wfour-char-constants
+    -Wglobal-constructors
+    -Wgnu-anonymous-struct
+    -Wgnu-auto-type
+    -Wgnu-binary-literal
+    -Wgnu-case-range
+    -Wgnu-complex-integer
+    -Wgnu-compound-literal-initializer
+    -Wgnu-conditional-omitted-operand
+    -Wgnu-empty-initializer
+    -Wgnu-empty-struct
+    -Wgnu-flexible-array-initializer
+    -Wgnu-flexible-array-union-member
+    -Wgnu-folding-constant
+    -Wgnu-imaginary-constant
+    -Wgnu-include-next
+    -Wgnu-label-as-value
+    -Wgnu-redeclared-enum
+    -Wgnu-statement-expression
+    -Wgnu-union-cast
+    -Wgnu-zero-line-directive
+    -Wgnu-zero-variadic-macro-arguments
+    -Wheader-hygiene # ? mozda previse?
+    -Widiomatic-parentheses
+    -Wimplicit-atomic-properties
+    -Wimplicit-fallthrough
+    -Wimplicit-fallthrough-per-function
+    -Wimplicit-float-conversion
+    -Wimplicit-function-declaration
+    -Wimplicit-int-conversion
+    -Wimplicit-int-float-conversion
+    -Wimplicit-retain-self
+    -Wimport-preprocessor-directive-pedantic
+    -Wincomplete-module
+    -Winconsistent-missing-destructor-override
+    -Winfinite-recursion
+    -Wint-in-bool-context
+    -Winvalid-or-nonexistent-directory
+    -Wkeyword-macro
+    -Wlanguage-extension-token
+    -Wlocal-type-template-args
+    -Wlogical-op-parentheses
+    -Wmain
+    -Wmethod-signatures
+    -Wmicrosoft
+    -Wmicrosoft-charize
+    -Wmicrosoft-comment-paste
+    -Wmicrosoft-cpp-macro
+    -Wmicrosoft-end-of-file
+    -Wmicrosoft-enum-value
+    -Wmicrosoft-exception-spec
+    -Wmicrosoft-fixed-enum
+    -Wmicrosoft-flexible-array
+    -Wmicrosoft-redeclare-static
+    -Wmisexpect             #?STA JE OVO
+    -Wmisleading-indentation
+    -Wmismatched-tags
+    -Wmissing-braces
+    -Wmissing-field-initializers
+    -Wmissing-method-return-type
+    -Wmissing-noreturn
+    -Wmissing-prototypes
+    -Wmissing-variable-declarations
+    -Rmodule-build   #?????
+    -Rmodule-import   # ????????
+    -Wmost
+    -Wmove
+    -Wnarrowing
+    -Wnested-anon-types
+    -Wnewline-eof
+    -Wnon-modular-include-in-framework-module
+    -Wnon-modular-include-in-module
+    -Wnon-virtual-dtor
+    -Wnonportable-system-include-path
+    -Wnull-pointer-arithmetic
+    -Wnullability-extension
+    -Wnullable-to-nonnull-conversion
+    -Wold-style-cast
+    -Wover-aligned #? PREVISE?
+    -Woverlength-strings
+    -Woverloaded-virtual
+    -Woverriding-method-mismatch
+    -Wpacked # ? previse?
+    -Wpadded # ? previse?
+    -Wparentheses
+    -Wpedantic-core-features
+    -Wpessimizing-move
+    -Wpointer-arith
+    -Wpoison-system-directories
+    -Wpragma-pack
+    -Wpragma-pack-suspicious-include
+    -Wpragmas
+    -Wprofile-instr-missing #? STA JE OVO?
+    -Wrange-loop-analysis
+    -Wrange-loop-bind-reference
+    -Wrange-loop-construct
+    -Wredundant-move
+    -Wredundant-parens
+    -Wreorder
+    -Wreorder-ctor
+    -Wreserved-id-macro
+    -Wretained-language-linkage
+    -Wreturn-std-move
+    -Wselector
+    -Wselector-type-mismatch
+    -Wself-assign
+    -Wself-assign-overloaded
+    -Wself-move
+    -Wsemicolon-before-method-body
+    -Wshadow
+    -Wshadow-all
+    -Wshadow-field
+    -Wshadow-field-in-constructor
+    -Wshadow-field-in-constructor-modified
+    -Wshadow-uncaptured-local
+    -Wshift-sign-overflow
+    -Wshorten-64-to-32
+    -Wsign-compare
+    -Wsign-conversion
+    -Wsigned-enum-bitfield
+    -Wspir-compat
+    -Wstatic-in-inline
+    -Wstrict-prototypes
+    -Wstrict-selector-match
+    -Wstring-conversion
+    -Wsuper-class-method-mismatch
+    -Wswitch-enum
+    -Wtautological-bitwise-compare
+    -Wtautological-constant-in-range-compare
+    -Wtautological-overlap-compare
+    -Wtautological-type-limit-compare
+    -Wtautological-unsigned-enum-zero-compare
+    -Wtautological-unsigned-zero-compare
+    -Wthread-safety
+    -Wthread-safety-analysis
+    -Wthread-safety-attributes
+    -Wthread-safety-beta
+    -Wthread-safety-negative
+    -Wthread-safety-precise
+    -Wthread-safety-reference
+    -Wthread-safety-verbose
+    -Wundeclared-selector
+    -Wundef
+    -Wundefined-func-template
+    -Wundefined-internal-type
+    -Wundefined-reinterpret-cast
+    -Wunguarded-availability
+    -Wuninitialized
+    -Wunknown-pragmas
+    -Wunnamed-type-template-args
+    -Wunneeded-internal-declaration
+    -Wunneeded-member-function
+    -Wunreachable-code
+    -Wunreachable-code-aggressive
+    -Wunreachable-code-break
+    -Wunreachable-code-loop-increment
+    -Wunreachable-code-return
+    -Wunsupported-dll-base-class-template
+    -Wunused
+    -Wunused-const-variable
+    -Wunused-exception-parameter
+    -Wunused-function
+    -Wunused-label
+    -Wunused-lambda-capture
+    -Wunused-local-typedef
+    -Wunused-macros
+    -Wunused-member-function
+    -Wunused-parameter
+    -Wunused-private-field
+    -Wunused-property-ivar
+    -Wunused-template
+    -Wused-but-marked-unused
+    -Wvector-conversion
+    -Wvla
+    -Wweak-template-vtables
+    -Wzero-as-null-pointer-constant
+    -Wzero-length-array
 )
 
 # =======================================================================================================================================
