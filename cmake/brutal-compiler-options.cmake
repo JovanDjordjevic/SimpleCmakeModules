@@ -1,7 +1,9 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
 set(SCM_MINIMUM_ALLOWED_GCC_VERSION "9.0")
+
 set(SCM_MINIMUM_ALLOWED_CLANG_VERSION "10.0")
+
 set(SCM_MINIMUM_ALLOWED_MSVC_VERSION "19.0")
 
 # =======================================================================================================================================
@@ -123,15 +125,14 @@ set(SCM_CLANG_10_OPTIONS
     -Wall
     -Wextra
     -Wpedantic
-    -Wabstract-vbase-init    # warning: initializer for virtual base class A of abstract class B will never be used
+    -Wabstract-vbase-init
     -Walloca
-    -Wanon-enum-enum-conversion         # warn about operations between different enum types
+    -Wanon-enum-enum-conversion
     -Warc-repeated-use-of-weak
     -Warc-maybe-repeated-use-of-weak
     -Warray-bounds-pointer-arithmetic
-    -Wassign-enum                       # 
+    -Wassign-enum
     -Watomic-implicit-seq-cst
-    -Wauto-import
     -Wbad-function-cast
     -Wbind-to-temporary-copy
     -Wbitfield-enum-conversion
@@ -140,15 +141,13 @@ set(SCM_CLANG_10_OPTIONS
     -Wcast-align
     -Wcast-qual
     -Wchar-subscripts
-    # -Wcomma    # possible misuse of comma operator???
     -Wcomment
-    -Wcomplex-component-init   # complex initialization specifying real and imaginary components is an extension ?
+    -Wcomplex-component-init
     -Wconditional-uninitialized 
     -Wconsumed
     -Wconversion
     -Wconversion-null
     -Wcoroutine-missing-unhandled-exception
-    # -Wcovered-switch-default # default label in switch that covers all enumeration values
     -Wcstring-format-directive
     -Wctad-maybe-unsupported
     -Wcustom-atomic-properties #?
@@ -161,7 +160,6 @@ set(SCM_CLANG_10_OPTIONS
     -Wdeprecated-this-capture
     -Wdirect-ivar-access # instance variable A id being directly accessed???? STA JE OVO
     -Wdisabled-macro-expansion
-    -Wdocumentation # MOZDA PREVISE? ovo je da baca warninge kad neka dokumentacija nije dobro napisana?
     -Wduplicate-decl-specifier
     -Wduplicate-enum
     -Wduplicate-method-arg
@@ -244,7 +242,6 @@ set(SCM_CLANG_10_OPTIONS
     -Wmicrosoft-fixed-enum
     -Wmicrosoft-flexible-array
     -Wmicrosoft-redeclare-static
-    -Wmisexpect             #?STA JE OVO
     -Wmisleading-indentation
     -Wmismatched-tags
     -Wmissing-braces
@@ -292,7 +289,7 @@ set(SCM_CLANG_10_OPTIONS
     -Wreorder-ctor
     -Wreserved-id-macro
     -Wretained-language-linkage
-    -Wreturn-std-move
+    -Wreturn-std-move             # NE POSTOJI OD 13 NADALJE?
     -Wselector
     -Wselector-type-mismatch
     -Wself-assign
@@ -369,6 +366,73 @@ set(SCM_CLANG_10_OPTIONS
     -Wzero-length-array
 )
 
+set(SCM_CLANG_11_OPTIONS
+    -Wframe-address
+    -Wmax-tokens # MOZDA PREVISE?
+    -Wsuggest-destructor-override
+    -Wsuggest-override
+    -Wundef-prefix
+    -Wuninitialized-const-reference
+)
+
+set(SCM_CLANG_12_OPTIONS
+    -Wcompletion-handler
+    -Wcompound-token-split-by-space
+    -Wfuse-ld-path
+    -Wgnu-folding-constant
+    -Wstring-concatenation
+    -Wtautological-value-range-compare
+)
+
+set(SCM_CLANG_13_OPTIONS
+    -Wcast-function-type
+    -Wdeprecated-copy-with-dtor
+    -Wdeprecated-copy-with-user-provided-copy
+    -Wdeprecated-copy-with-user-provided-dtor
+    -Wreserved-identifier
+    -Wreserved-macro-identifier
+    -Rround-trip-cc1-args
+    -Wtautological-unsigned-char-zero-compare
+    -Wunused-but-set-parameter
+    -Wunused-but-set-variable
+)
+
+set(SCM_CLANG_14_OPTIONS
+    -Wbit-int-extension
+    -Wbool-operation
+    -Wbitwise-instead-of-logical
+    -Wdelimited-escape-sequence-extension
+    -Rmodule-lock
+    -Rsearch-path-usage
+    -Wunaligned-access
+    -Wunreachable-code-fallthrough
+)
+
+set(SCM_CLANG_15_OPTIONS
+    -Warray-parameter
+    -Wgnu-line-marker
+    -Wgnu-null-pointer-arithmetic
+    -Wgnu-pointer-arith
+    -Wgnu-statement-expression-from-macro-expansion
+    -Wimplicit-int
+    -Winvalid-utf8
+    -Rmodule-include-translation
+)
+
+set(SCM_CLANG_16_OPTIONS
+    -Wcast-function-type-strict
+    -Wgnu-offsetof-extensions
+    -Wincompatible-function-pointer-types-strict
+    -Wpacked-non-pod
+    -Wunsafe-buffer-usage
+)
+
+set(SCM_CLANG_17_OPTIONS
+    -Wdeprecated-literal-operator
+    -Wdeprecated-redundant-constexpr-static-def
+    -Wgeneric-type-extension
+)
+
 # =======================================================================================================================================
 # ============================================================ MSVC OPTIONS =============================================================
 # =======================================================================================================================================
@@ -394,6 +458,8 @@ function(add_brutal_compiler_options SCM_TARGET_NAME)
                 list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_12_OPTIONS})
             elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
                 list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0.0")
+                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_14_OPTIONS})
             else()
                 message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
             endif()
@@ -406,6 +472,20 @@ function(add_brutal_compiler_options SCM_TARGET_NAME)
 
             if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
                 list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_11_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_12_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_13_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_14_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_15_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_16_OPTIONS})
+            elseif(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
+                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
             else()
                 message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
             endif()
