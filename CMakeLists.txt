@@ -17,7 +17,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)   # NOTE: does nothing if generator is set to Visual Studio
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 include(brutal-compiler-options)
@@ -30,3 +30,10 @@ create_docs_target(${CMAKE_SOURCE_DIR}/docs)
 
 include(grind)
 create_grind_target(main)
+
+include(sanitize)
+add_address_sanitizer_with_options(main)
+# add_undefined_behavior_sanitizer_with_options(main)
+# add_thread_sanitizer_with_options(main)
+# add_memory_sanitizer_with_options(main)
+# add_leak_sanitizer_with_options(main)
