@@ -109,8 +109,8 @@ set(SCM_GCC_13_OPTIONS
     -Winvalid-constexpr                 # Warn when a function never produces a constant expression. 
 )
 
-# currently unused warning flags that may produce a log of false positives:
-# gcc 9.4:
+# currently unused warning flags that may produce a log of false positives and/or create a lot of spammy warnings:
+# gcc 9 onward:
 #      -Wunsafe-loop-optimizations      # Warn if the loop cannot be optimized because the compiler could not assume anything on the bounds of the loop indices
     
 
@@ -150,15 +150,13 @@ set(SCM_CLANG_10_OPTIONS
     -Wcoroutine-missing-unhandled-exception
     -Wcstring-format-directive
     -Wctad-maybe-unsupported
-    -Wcustom-atomic-properties #?
-    -Wdate-time #? MOZDA PREVISE?
+    -Wcustom-atomic-properties
     -Wdelete-non-abstract-non-virtual-dtor
     -Wdeprecated-copy
     -Wdeprecated-copy-dtor
     -Wdeprecated-dynamic-exception-spec
     -Wdeprecated-implementations
     -Wdeprecated-this-capture
-    -Wdirect-ivar-access # instance variable A id being directly accessed???? STA JE OVO
     -Wdisabled-macro-expansion
     -Wduplicate-decl-specifier
     -Wduplicate-enum
@@ -184,7 +182,7 @@ set(SCM_CLANG_10_OPTIONS
     -Wfloat-zero-conversion
     -Wfor-loop-analysis
     -Wformat=2
-    -Wformat-non-iso #STA JE OVO?
+    -Wformat-non-iso
     -Wformat-nonliteral
     -Wformat-pedantic
     -Wformat-type-confusion
@@ -210,7 +208,7 @@ set(SCM_CLANG_10_OPTIONS
     -Wgnu-union-cast
     -Wgnu-zero-line-directive
     -Wgnu-zero-variadic-macro-arguments
-    -Wheader-hygiene # ? mozda previse?
+    -Wheader-hygiene
     -Widiomatic-parentheses
     -Wimplicit-atomic-properties
     -Wimplicit-fallthrough
@@ -250,8 +248,6 @@ set(SCM_CLANG_10_OPTIONS
     -Wmissing-noreturn
     -Wmissing-prototypes
     -Wmissing-variable-declarations
-    -Rmodule-build   #?????
-    -Rmodule-import   # ????????
     -Wmost
     -Wmove
     -Wnarrowing
@@ -265,12 +261,11 @@ set(SCM_CLANG_10_OPTIONS
     -Wnullability-extension
     -Wnullable-to-nonnull-conversion
     -Wold-style-cast
-    -Wover-aligned #? PREVISE?
+    -Wover-aligned
     -Woverlength-strings
     -Woverloaded-virtual
     -Woverriding-method-mismatch
-    -Wpacked # ? previse?
-    -Wpadded # ? previse?
+    -Wpacked
     -Wparentheses
     -Wpedantic-core-features
     -Wpessimizing-move
@@ -279,7 +274,6 @@ set(SCM_CLANG_10_OPTIONS
     -Wpragma-pack
     -Wpragma-pack-suspicious-include
     -Wpragmas
-    -Wprofile-instr-missing #? STA JE OVO?
     -Wrange-loop-analysis
     -Wrange-loop-bind-reference
     -Wrange-loop-construct
@@ -289,7 +283,7 @@ set(SCM_CLANG_10_OPTIONS
     -Wreorder-ctor
     -Wreserved-id-macro
     -Wretained-language-linkage
-    -Wreturn-std-move             # NE POSTOJI OD 13 NADALJE?
+    -Wreturn-std-move
     -Wselector
     -Wselector-type-mismatch
     -Wself-assign
@@ -368,7 +362,7 @@ set(SCM_CLANG_10_OPTIONS
 
 set(SCM_CLANG_11_OPTIONS
     -Wframe-address
-    -Wmax-tokens # MOZDA PREVISE?
+    -Wmax-tokens
     -Wsuggest-destructor-override
     -Wsuggest-override
     -Wundef-prefix
@@ -391,7 +385,6 @@ set(SCM_CLANG_13_OPTIONS
     -Wdeprecated-copy-with-user-provided-dtor
     -Wreserved-identifier
     -Wreserved-macro-identifier
-    -Rround-trip-cc1-args
     -Wtautological-unsigned-char-zero-compare
     -Wunused-but-set-parameter
     -Wunused-but-set-variable
@@ -402,8 +395,6 @@ set(SCM_CLANG_14_OPTIONS
     -Wbool-operation
     -Wbitwise-instead-of-logical
     -Wdelimited-escape-sequence-extension
-    -Rmodule-lock
-    -Rsearch-path-usage
     -Wunaligned-access
     -Wunreachable-code-fallthrough
 )
@@ -416,7 +407,6 @@ set(SCM_CLANG_15_OPTIONS
     -Wgnu-statement-expression-from-macro-expansion
     -Wimplicit-int
     -Winvalid-utf8
-    -Rmodule-include-translation
 )
 
 set(SCM_CLANG_16_OPTIONS
@@ -432,6 +422,11 @@ set(SCM_CLANG_17_OPTIONS
     -Wdeprecated-redundant-constexpr-static-def
     -Wgeneric-type-extension
 )
+
+# currently unused warning flags that may produce a log of false positives and/or create a lot of spammy warnings:
+# clang 10 onward:
+#       -Wpadded            # warn when compiler adds padding automatically in order to align class/structure members
+#       -Wdate-time         # warn that expansion of date or time macro is not reproducible
 
 # =======================================================================================================================================
 # ============================================================ MSVC OPTIONS =============================================================
