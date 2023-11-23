@@ -440,8 +440,10 @@ set(SCM_MSVC_19_OPTIONS
     /wd4820 # suppress the: C4820 warning: 'bytes' bytes padding added after construct 'member_name'
 )
 
-function(add_brutal_compiler_options SCM_TARGET_NAME)
+function(add_brutal_compiler_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
     if(TARGET ${SCM_TARGET_NAME})
+        message(STATUS "Adding options to target:" ${SCM_TARGET_NAME} " with " ${SCM_PROP_SPECIFIER} " target property specifier")
+
         if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             set(SCM_GCC_COMPILE_OPTIONS)
 
@@ -466,7 +468,7 @@ function(add_brutal_compiler_options SCM_TARGET_NAME)
                 list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
             endif()
 
-            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_GCC_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_GCC_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
             set(SCM_CLANG_COMPILE_OPTIONS)
 
@@ -500,7 +502,7 @@ function(add_brutal_compiler_options SCM_TARGET_NAME)
                 list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
             endif()
 
-            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_CLANG_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_CLANG_COMPILE_OPTIONS})
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
             set(SCM_MSVC_COMPILE_OPTIONS)
 
@@ -512,7 +514,7 @@ function(add_brutal_compiler_options SCM_TARGET_NAME)
                 message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
             endif()
 
-            target_compile_options(${SCM_TARGET_NAME} PRIVATE ${SCM_MSVC_COMPILE_OPTIONS})
+            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSVC_COMPILE_OPTIONS})
         else()
             message("Compiler: Unknown or unsupported compiler")
         endif()

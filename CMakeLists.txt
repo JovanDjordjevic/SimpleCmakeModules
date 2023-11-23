@@ -23,7 +23,7 @@ set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 include(brutal-compiler-options)
 
 add_executable(main main.cpp)
-add_brutal_compiler_options(main)
+add_brutal_compiler_options(main PUBLIC)
 
 include(doxy)
 create_docs_target(${CMAKE_SOURCE_DIR}/docs)

@@ -18,6 +18,13 @@ This is a module for enabling most of the warning/error flags during compilation
 - **Clang ver >= 10.0**
 - **MSVC ver >= 19.0**
 
+**Note that functions in this module only add to existing flags for your targets. They do not replace the already existing flags!**
+
+To add additional compiler warnings to your target use the provided function:
+`add_brutal_compiler_options(<your_target_name> <target_property_specifier>)`
+
+target_property_specifier can be one of: **PUBLIC** / **PRIVATE** / **INTERFACE** and their behavior is same as in the built in `target_compile_options` function
+
 Usage example:
 
 ```cmake
@@ -33,15 +40,17 @@ include(brutal-compiler-options)
 
 ...
 add_library(yourLib yourLibSources)
-add_brutal_compiler_options(yourLib)
+add_brutal_compiler_options(yourLib PRIVATE)
 ...
 
 ...
 add_executable(yourExe yourExeSources)
-add_brutal_compiler_options(yourExe)
+add_brutal_compiler_options(yourExe PUBLIC)
 ...
 
 # This will cause `yourLib` and `yourExe` to be compiled with additional warning options determined by your compiler version
+# Additional options for yourLib WILL NOT be propagated to other dependent targets
+# Additional options for yourExe WILL be propagated to other dependent targets
 ```
 
 ## Doxy
@@ -107,7 +116,7 @@ This is a module for enabling different sanitizers for your targets. Currently s
 - **Memory sanitizer** (MSAN)
 - **Leak sanitier** (LSAN) (Note that leak sanitizer is already included in address sanitizer)
 
-**Note that some sanitizers may are not compatible with eachother!**
+**Note that some sanitizers are not compatible with eachother!**
 
 The module provides 2 types of functions:
 
