@@ -433,7 +433,11 @@ set(SCM_CLANG_17_OPTIONS
 # =======================================================================================================================================
 
 set(SCM_MSVC_19_OPTIONS
-    /W4
+    /diagnostics:caret
+    /FC
+    /permissive
+    /Wall
+    /wd4820 # suppress the: C4820 warning: 'bytes' bytes padding added after construct 'member_name'
 )
 
 function(add_brutal_compiler_options SCM_TARGET_NAME)
