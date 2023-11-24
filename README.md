@@ -1,6 +1,6 @@
 # SimpleCmakeModules
 
-A collection of cmake modules I made for use with C++ development. 
+A collection of cmake modules I made for use with C++ development.
 
 Table of contents:
 
@@ -9,6 +9,7 @@ Table of contents:
   - [Doxy](#doxy)
   - [Grind](#grind)
   - [Sanitize](#sanitize)
+  - [Static Analysis](#static-analysis)
 
 ## Brutal compiler options
 
@@ -161,4 +162,50 @@ add_leak_sanitizer_with_options(yourExe PUBLIC)
 ...
 
 # By enabling any of the supported sanitizers, when executing `yourExe`, programs will terminate when a sanitizer detects that something is wrong with the program
+```
+
+## Static Analysis
+
+In file `static-analysis.cmake`
+
+This is a module for creating static analysis targets for your existing targets. Static analyzers that come built into the compilers are used, therefore the following compilers and versions are supported:
+
+- **GNU ver >= 10.0**
+- **Clang ver >= 10.0**
+- **MSVC ver >= 15.7**
+
+The module provides the following function:
+
+- `add_static_analysis_target(<your_target> <your_target_source_root_dir>)` - **your_target_source_root_dir** must be specified because internally, the module works by creating absolute paths to your source files and passing them to the compiler with analysis flags turned on
+  
+Usage example:
+
+```cmake
+# Suppose your project structure looks like this:
+# cmake/
+#     static-analysis.cmake
+# src/
+#   lib1.cpp
+#   lib1.hpp
+# CmakeLists.txt
+# main.cpp
+
+# Inside CmakeLists.txt you will have something like:
+
+...
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)
+...
+
+...
+add_executable(yourExe main.cpp src/lib.cpp)
+target_include_directories(yourExe src)
+
+include(static-analysis)
+add_static_analysis_target(yourExe ${CMAKE_CURRENT_SOURCE_DIR})
+...
+
+# This will create the `yourExe-static-analyze` target that can be manually built with:
+#     cmake --build . --target yourExe-static-analyze
+# This will output all warnings found by static analysis to the terminal
+# In this example the following files will be checked with static analysis: main.cpp lib1.cpp lib1.hpp
 ```
