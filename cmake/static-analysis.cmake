@@ -1,8 +1,19 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
-# At the time of writing this, g++13, clang++17 and msvc 19.37 were used for testing
+# =======================================================================================================================================
+# ================================================== Built-in compiler static analysis ==================================================
+# =======================================================================================================================================
 
-function(add_static_analysis_target SCM_TARGET_NAME SCM_SOURCE_ROOT_DIR)
+# scm_add_static_analysis_target(<your_target_name> <your_target_source_root_dir>)
+#
+# This function will create a target called your_target_name-static-analyze that will perform static analysis on
+# source and header files of your target. Note that behavior is different accross compilers (for example, MSVC will try to
+# build your target after analysis and you will probably see errors relating to the build in the terminal, while on GCC and Clang 
+# this behavior is not present). At the time of writing this, g++13, clang++17 and msvc 19.37 were used for testing
+#
+# your_target_name - name of your target
+# your_target_source_root_dir - 
+function(scm_add_static_analysis_target SCM_TARGET_NAME SCM_SOURCE_ROOT_DIR)
     message(STATUS "Detected ${CMAKE_CXX_COMPILER_ID} compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
 
     set(SCM_ANALYZER_OPTIONS)
@@ -37,7 +48,7 @@ function(add_static_analysis_target SCM_TARGET_NAME SCM_SOURCE_ROOT_DIR)
         list(APPEND SCM_TARGET_SOURCES_ABSOLUTE_PATHS ${SCM_SOURCE_ABS_PATH})
     endforeach()
 
-    message(STATUS "Creating ${SCM_TARGET_NAME}-static-analyze target")
+    message(STATUS "Creating `${SCM_TARGET_NAME}-static-analyze` target")
 
     add_custom_target(
         ${SCM_TARGET_NAME}-static-analyze

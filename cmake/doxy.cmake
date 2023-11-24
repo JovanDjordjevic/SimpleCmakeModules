@@ -1,6 +1,16 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
-function(create_docs_target SCM_FOLDER_WITH_DOXYFILE)
+# =======================================================================================================================================
+# ====================================================== Doxygen target generation ======================================================
+# =======================================================================================================================================
+
+# scm_create_docs_target(<doxyfile_location_folder>)
+#
+# This function will create a `docs` target that will generate doxygen documentation when built
+#
+# doxyfile_location_folder - Path to folder where the Doxyfile is located
+#                            This will also be the output folder for the generated documentation
+function(scm_create_docs_target SCM_FOLDER_WITH_DOXYFILE)
     find_package(Doxygen)
 
     if(DOXYGEN_FOUND)

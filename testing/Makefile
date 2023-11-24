@@ -1,13 +1,8 @@
 BUILD_TYPE_LINUX = Debug
 # BUILD_TYPE_LINUX = Release
 GENERATOR_LINUX = "Unix Makefiles"
-COMPILER_LINUX = g++
-# COMPILER_LINUX = clang++
-
-ENABLE_DOXYGEN_LINUX = ON
-ENABLE_TESTING_LINUX = ON
-ENABLE_COVERAGE_REPORT_LINUX = ON
-ENABLE_BUILD_EXAMPLES_LINUX = ON
+# COMPILER_LINUX = g++
+COMPILER_LINUX = clang++
 
 do_cmake_linux:
 	rm -rf build && \
@@ -19,3 +14,18 @@ do_cmake_linux:
 		  .. && \
 	cmake --build . && \
 	./src/main
+
+# =====================================================================================================
+
+BUILD_TYPE_WINDOWS = Debug
+# BUILD_TYPE_WINDOWS = Release
+GENERATOR_WINDOWS = "Visual Studio 17 2022"
+
+do_cmake_windows:
+	echo Y | \
+	rmdir /S build && \
+	mkdir build &&	\
+	cd build &&	\
+	cmake -G $(GENERATOR_WINDOWS) \
+		  .. && \
+	cmake --build . --config $(BUILD_TYPE_WINDOWS)

@@ -1,6 +1,16 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
-function(create_grind_target SCM_TARGET_NAME)
+# =======================================================================================================================================
+# ====================================================== Callgrind and kcachegrind ======================================================
+# =======================================================================================================================================
+
+# scm_create_grind_target(<your_target_name>)
+#
+# This function will create a target called your_target_name-grind, which when
+# built will run callgrind on your executable, and then show you human readable kcachegrind output
+#
+# your_target_name - name of your executable target
+function(scm_create_grind_target SCM_TARGET_NAME)
     find_program(SCM_VALGRIND_EXECUTABLE valgrind)
     if(NOT SCM_VALGRIND_EXECUTABLE)
         message(FATAL_ERROR "Error: 'valgrind' executable not found. Please install Valgrind.")

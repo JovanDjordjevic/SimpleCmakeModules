@@ -24,7 +24,7 @@ This is a module for enabling most of the warning/error flags during compilation
 **Note that functions in this module only add to existing flags for your targets. They do not replace the already existing flags!**
 
 To add additional compiler warnings to your target use the provided function:
-`add_brutal_compiler_options(<your_target_name> <target_property_specifier>)`
+`scm_add_brutal_compiler_options(<your_target_name> <target_property_specifier>)`
 
 target_property_specifier can be one of: **PUBLIC** / **PRIVATE** / **INTERFACE** and their behavior is same as in the built in `target_compile_options` function
 
@@ -43,12 +43,12 @@ include(brutal-compiler-options)
 
 ...
 add_library(yourLib yourLibSources)
-add_brutal_compiler_options(yourLib PRIVATE)
+scm_add_brutal_compiler_options(yourLib PRIVATE)
 ...
 
 ...
 add_executable(yourExe yourExeSources)
-add_brutal_compiler_options(yourExe PUBLIC)
+scm_add_brutal_compiler_options(yourExe PUBLIC)
 ...
 
 # This will cause `yourLib` and `yourExe` to be compiled with additional warning options determined by your compiler version
@@ -73,12 +73,12 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/)   # or which ever folder you
 
 ...
 include(doxy)
-create_docs_target(${CMAKE_SOURCE_DIR}/docs) # or which ever folder the Doxyfile is located in
+scm_create_docs_target(${CMAKE_SOURCE_DIR}/docs) # or which ever folder the Doxyfile is located in
 ...
 
 # This will create the `docs` target that can be manually built with:
 #     cmake --build . --target docs
-# Documentation will be created in the folder specified when calling create_docs_target(...) function
+# Documentation will be created in the folder specified when calling scm_create_docs_target(...) function
 ```
 
 ## Grind
@@ -100,7 +100,7 @@ include(grind)
 
 ...
 add_executable(yourExe yourExeSources)
-create_grind_target(yourExe)
+scm_create_grind_target(yourExe)
 ...
 
 # This will create the `yourExe-grind` target that can be manually built with:
@@ -145,20 +145,20 @@ add_executable(yourExe yourExeSources)
 # Note that these are just the possible functions and their invocations. Generally you will never enable a sanitizer both with and without extra options (you will pick only one of those 2). Also, you will use the appropriate target property specifier for your case
 # Also note that since some sanitizers are not compatible with eachother, you will probably not add them all to your executable at the same time 
 
-add_address_sanitizer(yourExe PUBLIC)
-add_address_sanitizer_with_options(yourExe PUBLIC)
+scm_add_address_sanitizer(yourExe PUBLIC)
+scm_add_address_sanitizer_with_options(yourExe PUBLIC)
 
-add_undefined_behavior_sanitizer(yourExe PRIVATE)
-add_undefined_behavior_sanitizer_with_options(yourExe PRIVATE)
+scm_add_undefined_behavior_sanitizer(yourExe PRIVATE)
+scm_add_undefined_behavior_sanitizer_with_options(yourExe PRIVATE)
 
-add_thread_sanitizer( INTERFACE)
-add_thread_sanitizer_with_options(yourExe INTERFACE)
+scm_add_thread_sanitizer( INTERFACE)
+scm_add_thread_sanitizer_with_options(yourExe INTERFACE)
 
-add_memory_sanitizer(yourExe PUBLIC)
-add_memory_sanitizer_with_options(yourExe PRIVATE)
+scm_add_memory_sanitizer(yourExe PUBLIC)
+scm_add_memory_sanitizer_with_options(yourExe PRIVATE)
 
-add_leak_sanitizer(yourExe INTERFACE)
-add_leak_sanitizer_with_options(yourExe PUBLIC)
+scm_add_leak_sanitizer(yourExe INTERFACE)
+scm_add_leak_sanitizer_with_options(yourExe PUBLIC)
 ...
 
 # By enabling any of the supported sanitizers, when executing `yourExe`, programs will terminate when a sanitizer detects that something is wrong with the program
@@ -176,7 +176,7 @@ This is a module for creating static analysis targets for your existing targets.
 
 The module provides the following function:
 
-- `add_static_analysis_target(<your_target> <your_target_source_root_dir>)` - **your_target_source_root_dir** must be specified because internally, the module works by creating absolute paths to your source files and passing them to the compiler with analysis flags turned on
+- `scm_add_static_analysis_target(<your_target> <your_target_source_root_dir>)` - **your_target_source_root_dir** must be specified because internally, the module works by creating absolute paths to your source files and passing them to the compiler with analysis flags turned on
   
 Usage example:
 
@@ -201,7 +201,7 @@ add_executable(yourExe main.cpp src/lib.cpp)
 target_include_directories(yourExe src)
 
 include(static-analysis)
-add_static_analysis_target(yourExe ${CMAKE_CURRENT_SOURCE_DIR})
+scm_add_static_analysis_target(yourExe ${CMAKE_CURRENT_SOURCE_DIR})
 ...
 
 # This will create the `yourExe-static-analyze` target that can be manually built with:

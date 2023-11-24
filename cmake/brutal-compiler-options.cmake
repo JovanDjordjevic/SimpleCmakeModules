@@ -1,13 +1,12 @@
 # SCM_ prefix is used to mark variables that come from SimpleCmakeModules
 
-set(SCM_MINIMUM_ALLOWED_GCC_VERSION "9.0")
-
-set(SCM_MINIMUM_ALLOWED_CLANG_VERSION "10.0")
-
-set(SCM_MINIMUM_ALLOWED_MSVC_VERSION "19.0")
+# The following compiler minimum versions are supported by this module:
+# gcc 9.0
+# clang 10.0
+# msvc 19.0
 
 # =======================================================================================================================================
-# ============================================================= GCC OPTIONS =============================================================
+# ============================================================= GCC options =============================================================
 # =======================================================================================================================================
 
 # for gcc 9.x. These options will always be included, and when a greater compiler version is detected,
@@ -115,7 +114,7 @@ set(SCM_GCC_13_OPTIONS
     
 
 # =======================================================================================================================================
-# ============================================================ CLANG OPTIONS ============================================================
+# ============================================================ CLANG options ============================================================
 # =======================================================================================================================================
 
 # for clang 10.x. These options will always be included, and when a greater compiler version is detected,
@@ -429,7 +428,7 @@ set(SCM_CLANG_17_OPTIONS
 #       -Wdate-time         # warn that expansion of date or time macro is not reproducible
 
 # =======================================================================================================================================
-# ============================================================ MSVC OPTIONS =============================================================
+# ============================================================ MSVC options =============================================================
 # =======================================================================================================================================
 
 set(SCM_MSVC_19_OPTIONS
@@ -440,86 +439,92 @@ set(SCM_MSVC_19_OPTIONS
     /wd4820 # suppress the: C4820 warning: 'bytes' bytes padding added after construct 'member_name'
 )
 
-function(add_brutal_compiler_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
-    if(TARGET ${SCM_TARGET_NAME})
-        message(STATUS "Adding options to target:" ${SCM_TARGET_NAME} " with " ${SCM_PROP_SPECIFIER} " target property specifier")
+# =======================================================================================================================================
+# ==================================================== Functions for adding options =====================================================
+# =======================================================================================================================================
 
-        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-            set(SCM_GCC_COMPILE_OPTIONS)
+# scm_add_brutal_compiler_options(<your_target_name> <property_specifier>)
+#
+# This function will add additional compiler warning flags to your target based on your CMAKE_CXX_COMPILER_ID
+#
+# your_target_name - name of your target
+# property_specifier - set this to PUBLIC/PRIVATE/INTERFACE to set rules to what other taregts/dependencies these compiler flags will be applied to
+#                      behavior is the same as in `target_compile_options`
+function(scm_add_brutal_compiler_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding brutal compile options to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
-            message(STATUS "Detected GNU compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
-                message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
-            endif()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        set(SCM_GCC_COMPILE_OPTIONS)
 
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0.0")
-                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_9_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
-                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_10_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
-                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_11_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
-                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_12_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
-                list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
-            endif()
-
-            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_GCC_COMPILE_OPTIONS})
-        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-            set(SCM_CLANG_COMPILE_OPTIONS)
-
-            message(STATUS "Detected Clang compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.0.0")
-                message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
-            endif()
-
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_11_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_12_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_13_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_14_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_15_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_16_OPTIONS})
-            endif()
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
-                list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
-            endif()
-
-            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_CLANG_COMPILE_OPTIONS})
-        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-            set(SCM_MSVC_COMPILE_OPTIONS)
-
-            message(STATUS "Detected MSVC compiler, version: " ${CMAKE_CXX_COMPILER_VERSION})
-
-            if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.0.0")
-                list(APPEND SCM_MSVC_COMPILE_OPTIONS ${SCM_MSVC_19_OPTIONS})
-            else()
-                message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
-            endif()
-
-            target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSVC_COMPILE_OPTIONS})
-        else()
-            message("Compiler: Unknown or unsupported compiler")
+        message(STATUS "Detected GNU compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
+            message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
         endif()
-        
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0.0")
+            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_9_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
+            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_10_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
+            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_11_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
+            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_12_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
+            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
+        endif()
+
+        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_GCC_COMPILE_OPTIONS})
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        set(SCM_CLANG_COMPILE_OPTIONS)
+
+        message(STATUS "Detected Clang compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.0.0")
+            message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
+        endif()
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_11_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_12_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_13_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_14_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_15_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_16_OPTIONS})
+        endif()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
+            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
+        endif()
+
+        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_CLANG_COMPILE_OPTIONS})
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        set(SCM_MSVC_COMPILE_OPTIONS)
+
+        message(STATUS "Detected MSVC compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.0.0")
+            list(APPEND SCM_MSVC_COMPILE_OPTIONS ${SCM_MSVC_19_OPTIONS})
+        else()
+            message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
+        endif()
+
+        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSVC_COMPILE_OPTIONS})
     else()
-        message("Error: Target '${SCM_TARGET_NAME}' not found.")
+        message("Compiler: Unknown or unsupported compiler")
     endif()
 endfunction()
