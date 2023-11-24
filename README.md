@@ -1,6 +1,8 @@
 # SimpleCmakeModules
 
-A collection of cmake modules I made for use with C++ development. These include:
+A collection of cmake modules I made for use with C++ development. 
+
+Table of contents:
 
 - [SimpleCmakeModules](#simplecmakemodules)
   - [Brutal compiler options](#brutal-compiler-options)
@@ -120,8 +122,8 @@ This is a module for enabling different sanitizers for your targets. Currently s
 
 The module provides 2 types of functions:
 
-- `add_*_sanitizer(<your_target>)` - Adds the necessary compiler and linker options to enable the specified sanitizer
-- `add_*_sanitizer_with_options(<your_target>)` - Same as the above, but also adds some additional compiler and linker flags that pair well with specified sanitizer
+- `add_*_sanitizer(<your_target> <target_property_specifier>)` - Adds the necessary compiler and linker options to enable the specified sanitizer. target_property_specifier can be one of: **PUBLIC** / **PRIVATE** / **INTERFACE** and their behavior is same as in the built in `target_compile_options`/`target_link_options`/`target_link_libraries` functions
+- `add_*_sanitizer_with_options(<your_target> <target_property_specifier>)` - Same as the above, but also adds some additional compiler and linker flags that pair well with specified sanitizer
 
 At the time of writing this module, the supported sanitizers were tested with `gcc-13` and `clang-17`. They should work with previous compiler versions as well, but no guarantees are made. It is up to the user to make sure they have a toolchain that supports enabling of the requested sanitizer.
 
@@ -139,23 +141,23 @@ include(sanitize)
 ...
 add_executable(yourExe yourExeSources)
 
-# Note that these are all the possible functions and their invocations. Generally you will never enable a sanitizer both with and without extra options (you will pick only one of those 2).
+# Note that these are just the possible functions and their invocations. Generally you will never enable a sanitizer both with and without extra options (you will pick only one of those 2). Also, you will use the appropriate target property specifier for your case
 # Also note that since some sanitizers are not compatible with eachother, you will probably not add them all to your executable at the same time 
 
-add_address_sanitizer(yourExe)
-add_address_sanitizer_with_options(yourExe)
+add_address_sanitizer(yourExe PUBLIC)
+add_address_sanitizer_with_options(yourExe PUBLIC)
 
-add_undefined_behavior_sanitizer(yourExe)
-add_undefined_behavior_sanitizer_with_options(yourExe)
+add_undefined_behavior_sanitizer(yourExe PRIVATE)
+add_undefined_behavior_sanitizer_with_options(yourExe PRIVATE)
 
-add_thread_sanitizer(yourExe)
-add_thread_sanitizer_with_options(yourExe)
+add_thread_sanitizer( INTERFACE)
+add_thread_sanitizer_with_options(yourExe INTERFACE)
 
-add_memory_sanitizer(yourExe)
-add_memory_sanitizer_with_options(yourExe)
+add_memory_sanitizer(yourExe PUBLIC)
+add_memory_sanitizer_with_options(yourExe PRIVATE)
 
-add_leak_sanitizer(yourExe)
-add_leak_sanitizer_with_options(yourExe)
+add_leak_sanitizer(yourExe INTERFACE)
+add_leak_sanitizer_with_options(yourExe PUBLIC)
 ...
 
 # By enabling any of the supported sanitizers, when executing `yourExe`, programs will terminate when a sanitizer detects that something is wrong with the program

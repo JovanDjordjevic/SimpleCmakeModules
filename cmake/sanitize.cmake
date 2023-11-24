@@ -10,21 +10,21 @@
 # =======================================================================================================================================
 
 # Add address sanitizer to target (and do not set any other compiler options)
-function(add_address_sanitizer SCM_TARGET_NAME)
-    message(STATUS "Adding Address Sanitizer to target ${SCM_TARGET_NAME}")
+function(add_address_sanitizer SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding Address Sanitizer to target to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
     set(SCM_ASAN_OPTIONS 
         -g
         -fsanitize=address
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_ASAN_OPTIONS})
-    target_link_libraries(${SCM_TARGET_NAME} PUBLIC ${SCM_ASAN_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_ASAN_OPTIONS})
+    target_link_libraries(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_ASAN_OPTIONS})
 endfunction()
 
 # same as add_address_sanitizer, but also adds useful compiler options for easier debugging with asan
-function(add_address_sanitizer_with_options SCM_TARGET_NAME)
-    add_address_sanitizer(${SCM_TARGET_NAME})
+function(add_address_sanitizer_with_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    add_address_sanitizer(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER})
 
     message(STATUS "Adding additional options for use with Address Sanitizer")
 
@@ -36,8 +36,8 @@ function(add_address_sanitizer_with_options SCM_TARGET_NAME)
         -fno-sanitize-recover
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_ASAN_ADDITIONAL_FLAGS})
-    target_link_options(${SCM_TARGET_NAME} PUBLIC ${SCM_ASAN_ADDITIONAL_FLAGS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_ASAN_ADDITIONAL_FLAGS})
+    target_link_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_ASAN_ADDITIONAL_FLAGS})
 endfunction()
 
 # =======================================================================================================================================
@@ -45,21 +45,21 @@ endfunction()
 # =======================================================================================================================================
 
 # Add undefined behavior sanitizer to target (and do not set any other compiler options)
-function(add_undefined_behavior_sanitizer SCM_TARGET_NAME)
-    message(STATUS "Adding Undefined Behavior Sanitizer to target ${SCM_TARGET_NAME}")
+function(add_undefined_behavior_sanitizer SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding Undefined Behavior Sanitizer to target to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
     set(SCM_UBSAN_OPTIONS 
         -g
         -fsanitize=undefined
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_UBSAN_OPTIONS})
-    target_link_libraries(${SCM_TARGET_NAME} PUBLIC ${SCM_UBSAN_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_UBSAN_OPTIONS})
+    target_link_libraries(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_UBSAN_OPTIONS})
 endfunction()
 
 # same as add_undefined_behavior_sanitizer, but also adds useful compiler options for easier debugging with ubsan
-function(add_undefined_behavior_sanitizer_with_options SCM_TARGET_NAME)
-    add_undefined_behavior_sanitizer(${SCM_TARGET_NAME})
+function(add_undefined_behavior_sanitizer_with_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    add_undefined_behavior_sanitizer(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER})
 
     message(STATUS "Adding additional options for use with Undefined Behavior Sanitizer")
 
@@ -71,8 +71,8 @@ function(add_undefined_behavior_sanitizer_with_options SCM_TARGET_NAME)
         -fno-inline
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_UBSAN_ADDITIONAL_FLAGS})
-    target_link_options(${SCM_TARGET_NAME} PUBLIC ${SCM_UBSAN_ADDITIONAL_FLAGS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_UBSAN_ADDITIONAL_FLAGS})
+    target_link_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_UBSAN_ADDITIONAL_FLAGS})
 endfunction()
 
 # =======================================================================================================================================
@@ -80,21 +80,21 @@ endfunction()
 # =======================================================================================================================================
 
 # Add thread sanitizer to target (and do not set any other compiler options)
-function(add_thread_sanitizer SCM_TARGET_NAME)
-    message(STATUS "Adding Thread Behavior Sanitizer to target ${SCM_TARGET_NAME}")
+function(add_thread_sanitizer SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding Thread Behavior Sanitizer to target to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
     set(SCM_TSAN_OPTIONS 
         -g
         -fsanitize=thread
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_TSAN_OPTIONS})
-    target_link_libraries(${SCM_TARGET_NAME} PUBLIC ${SCM_TSAN_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_TSAN_OPTIONS})
+    target_link_libraries(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_TSAN_OPTIONS})
 endfunction()
 
 # same as add_thread_sanitizer, but also adds useful compiler options for easier debugging with tsan
-function(add_thread_sanitizer_with_options SCM_TARGET_NAME)
-    add_thread_sanitizer(${SCM_TARGET_NAME})
+function(add_thread_sanitizer_with_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    add_thread_sanitizer(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER})
 
     message(STATUS "Adding additional options for use with Thread Sanitizer")
 
@@ -106,8 +106,8 @@ function(add_thread_sanitizer_with_options SCM_TARGET_NAME)
         -fno-inline
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_TSAN_ADDITIONAL_FLAGS})
-    target_link_options(${SCM_TARGET_NAME} PUBLIC ${SCM_TSAN_ADDITIONAL_FLAGS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_TSAN_ADDITIONAL_FLAGS})
+    target_link_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_TSAN_ADDITIONAL_FLAGS})
 endfunction()
 
 # =======================================================================================================================================
@@ -115,21 +115,21 @@ endfunction()
 # =======================================================================================================================================
 
 # Add memory to target (and do not set any other compiler options)
-function(add_memory_sanitizer SCM_TARGET_NAME)
-    message(STATUS "Adding Memory Behavior Sanitizer to target ${SCM_TARGET_NAME}")
+function(add_memory_sanitizer SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding Memory Behavior Sanitizer to target to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
     set(SCM_MSAN_OPTIONS 
         -g
         -fsanitize=memory
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_MSAN_OPTIONS})
-    target_link_libraries(${SCM_TARGET_NAME} PUBLIC ${SCM_MSAN_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSAN_OPTIONS})
+    target_link_libraries(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSAN_OPTIONS})
 endfunction()
 
 # same as add_memory_sanitizer, but also adds useful compiler options for easier debugging with msan
-function(add_memory_sanitizer_with_options SCM_TARGET_NAME)
-    add_memory_sanitizer(${SCM_TARGET_NAME})
+function(add_memory_sanitizer_with_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    add_memory_sanitizer(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER})
 
     message(STATUS "Adding additional options for use with Memory Sanitizer")
 
@@ -140,8 +140,8 @@ function(add_memory_sanitizer_with_options SCM_TARGET_NAME)
         -fsanitize-memory-use-after-dtor
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_MSAN_ADDITIONAL_FLAGS})
-    target_link_options(${SCM_TARGET_NAME} PUBLIC ${SCM_MSAN_ADDITIONAL_FLAGS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSAN_ADDITIONAL_FLAGS})
+    target_link_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSAN_ADDITIONAL_FLAGS})
 endfunction()
 
 # =======================================================================================================================================
@@ -151,21 +151,21 @@ endfunction()
 # NOTE: leak sanitizer is included in address sanitizer by default
 
 # Add leak to target (and do not set any other compiler options)
-function(add_leak_sanitizer SCM_TARGET_NAME)
-    message(STATUS "Adding Leak Behavior Sanitizer to target ${SCM_TARGET_NAME}")
+function(add_leak_sanitizer SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    message(STATUS "Adding Leak Behavior Sanitizer to target to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
     set(SCM_LSAN_OPTIONS 
         -g
         -fsanitize=leak
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_LSAN_OPTIONS})
-    target_link_libraries(${SCM_TARGET_NAME} PUBLIC ${SCM_LSAN_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_LSAN_OPTIONS})
+    target_link_libraries(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_LSAN_OPTIONS})
 endfunction()
 
 # same as add_leak_sanitizer, but also adds useful compiler options for easier debugging with lsan
-function(add_leak_sanitizer_with_options SCM_TARGET_NAME)
-    add_leak_sanitizer(${SCM_TARGET_NAME})
+function(add_leak_sanitizer_with_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    add_leak_sanitizer(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER})
 
     message(STATUS "Adding additional options for use with Leak Sanitizer")
 
@@ -174,6 +174,6 @@ function(add_leak_sanitizer_with_options SCM_TARGET_NAME)
         -fno-omit-frame-pointer
     )
 
-    target_compile_options(${SCM_TARGET_NAME} PUBLIC ${SCM_LSAN_ADDITIONAL_FLAGS})
-    target_link_options(${SCM_TARGET_NAME} PUBLIC ${SCM_LSAN_ADDITIONAL_FLAGS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_LSAN_ADDITIONAL_FLAGS})
+    target_link_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_LSAN_ADDITIONAL_FLAGS})
 endfunction()
