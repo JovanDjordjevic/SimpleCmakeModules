@@ -1,14 +1,13 @@
 TODO.txt
 
-build/
-docs/html/
-docs/latex/
+testing/build/
+testing/docs/html/
+testing/docs/latex/
 
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
-Testing
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json

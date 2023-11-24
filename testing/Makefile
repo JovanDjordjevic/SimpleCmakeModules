@@ -18,4 +18,4 @@ do_cmake_linux:
 		  -DCMAKE_BUILD_TYPE=$(BUILD_TYPE_LINUX) \
 		  .. && \
 	cmake --build . && \
-	./main
+	./src/main

@@ -4,17 +4,13 @@
 #include <sys/types.h>
 #include <cstring>
 
+#include <stdio.h>
+
 int main() {
-    std::cout << "hello" << std::endl;
-
-    std::vector<int> vec;
-    for (int i = 0; i < 100000; ++i) {
-        vec.push_back(i);
-    }
-
+    int x;
+    printf("The value of x is %d\n", x); // Using uninitialized variable
     return 0;
 }
-
 // ===============================================================================================================
 // PROGRAM TO TRIGGER ASAN AND UBSAN ERROR
 // ===============================================================================================================
