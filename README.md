@@ -23,10 +23,17 @@ This is a module for enabling most of the warning/error flags during compilation
 
 **Note that functions in this module only add to existing flags for your targets. They do not replace the already existing flags!**
 
-To add additional compiler warnings to your target use the provided function:
-`scm_add_brutal_compiler_options(<your_target_name> <target_property_specifier>)`
+To add additional compiler warnings to your target (based on your `CMAKE_CXX_COMPILER_ID`) use the provided function:
 
-target_property_specifier can be one of: **PUBLIC** / **PRIVATE** / **INTERFACE** and their behavior is same as in the built in `target_compile_options` function
+`scm_add_brutal_compiler_options(<your_target_name> <property_specifier> [<additional_flags>...])`
+
+Parameters:
+
+- **your_target_name** - Name of your target
+- **property_specifier** - Set this to one of: **PUBLIC** / **PRIVATE** / **INTERFACE** to set rules to what other taregts/dependencies these compiler flags will be applied to (behavior is same as in the built in `target_compile_options` function)
+                     behavior is the same as in `target_compile_options`
+- **[<additional_flags>...]** - An optional list of additional compiler flags you wish to add to your target (for example explicitly
+                          disable some warnings that are not relevant to you or that are spammy)
 
 Usage example:
 
@@ -54,6 +61,23 @@ scm_add_brutal_compiler_options(yourExe PUBLIC)
 # This will cause `yourLib` and `yourExe` to be compiled with additional warning options determined by your compiler version
 # Additional options for yourLib WILL NOT be propagated to other dependent targets
 # Additional options for yourExe WILL be propagated to other dependent targets
+
+# Here is also an example of adding additional flags to suppress some annoying and mostly useless warnings:
+...
+add_executable(yourExe2 yourExeSources)
+
+set(WARNING_SUPPRESSORS)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND WARNING_SUPPRESSORS -Wno-unsafe-loop-optimizations)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND WARNING_SUPPRESSORS -Wno-padded -Wno-date-time)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    list(APPEND WARNING_SUPPRESSORS /wd4820 /wd4514 /wd4711 /wd5045)
+endif()
+
+scm_add_brutal_compiler_options(yourExe2 PUBLIC ${WARNING_SUPPRESSORS})
+...
 ```
 
 ## Doxy

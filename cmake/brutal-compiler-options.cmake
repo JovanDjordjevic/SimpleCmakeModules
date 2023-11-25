@@ -75,6 +75,7 @@ set(SCM_GCC_9_OPTIONS
     -Wnoexcept                          # Warn when a noexcept-expression evaluates to false because of a call to a function that does not have a non-throwing exception specification (i.e. throw() or noexcept) but is known by the compiler to never throw an exception.
     -Wnoexcept-type                     # Warn if the C++17 feature making noexcept part of a function type changes the mangled name of a symbol relative to C++14.
     -Wregister                          # Warn on uses of the register storage class specifier, except when it is part of the GNU Explicit Register Variables extension
+    -Wunsafe-loop-optimizations         # Warn if the loop cannot be optimized because the compiler could not assume anything on the bounds of the loop indices    
 )
 
 set(SCM_GCC_10_OPTIONS
@@ -108,10 +109,9 @@ set(SCM_GCC_13_OPTIONS
     -Winvalid-constexpr                 # Warn when a function never produces a constant expression. 
 )
 
-# currently unused warning flags that may produce a log of false positives and/or create a lot of spammy warnings:
-# gcc 9 onward:
-#      -Wunsafe-loop-optimizations      # Warn if the loop cannot be optimized because the compiler could not assume anything on the bounds of the loop indices
-    
+# Some flags you may wish to pass as optional argument(s) in scm_add_brutal_compiler_options
+# to suppress some common spammy warnings or warnings that give false positives
+#   -Wno-unsafe-loop-optimizations      # suppress warning that the loop cannot be optimized because the compiler could not assume anything on the bounds of the loop indices
 
 # =======================================================================================================================================
 # ============================================================ CLANG options ============================================================
@@ -150,6 +150,7 @@ set(SCM_CLANG_10_OPTIONS
     -Wcstring-format-directive
     -Wctad-maybe-unsupported
     -Wcustom-atomic-properties
+    -Wdate-time
     -Wdelete-non-abstract-non-virtual-dtor
     -Wdeprecated-copy
     -Wdeprecated-copy-dtor
@@ -265,6 +266,7 @@ set(SCM_CLANG_10_OPTIONS
     -Woverloaded-virtual
     -Woverriding-method-mismatch
     -Wpacked
+    -Wpadded
     -Wparentheses
     -Wpedantic-core-features
     -Wpessimizing-move
@@ -422,109 +424,112 @@ set(SCM_CLANG_17_OPTIONS
     -Wgeneric-type-extension
 )
 
-# currently unused warning flags that may produce a log of false positives and/or create a lot of spammy warnings:
-# clang 10 onward:
-#       -Wpadded            # warn when compiler adds padding automatically in order to align class/structure members
-#       -Wdate-time         # warn that expansion of date or time macro is not reproducible
+# Some flags you may wish to pass as optional argument(s) in scm_add_brutal_compiler_options
+# to suppress some common spammy warnings or warnings that give false positives
+#   -Wno-padded            # suppress the warning that compiler adds padding automatically in order to align class/structure members
+#   -Wno-date-time         # suppress the warning that expansion of date or time macro is not reproducible
 
 # =======================================================================================================================================
 # ============================================================ MSVC options =============================================================
 # =======================================================================================================================================
 
 set(SCM_MSVC_19_OPTIONS
-    /diagnostics:caret
     /FC
     /permissive
     /Wall
-    /wd4820 # suppress the: C4820 warning: 'bytes' bytes padding added after construct 'member_name'
 )
+
+# Some flags you may wish to pass as optional argument(s) in scm_add_brutal_compiler_options
+# to suppress some common spammy warnings or warnings that give false positives
+#   /wd4820            # suppress the: C4820 warning: 'bytes' bytes padding added after construct 'member_name'
+#   /wd4514            # suppress the: C4514 warning: 'function' : unreferenced inline function has been removed
+#   /wd4711            # suppress the: C4711 warning: 'function' :has been selected for inline expansion
+#   /wd5045            # suppress the: C5045 warning: Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified
 
 # =======================================================================================================================================
 # ==================================================== Functions for adding options =====================================================
 # =======================================================================================================================================
 
-# scm_add_brutal_compiler_options(<your_target_name> <property_specifier>)
+# scm_add_brutal_compiler_options(<your_target_name> <property_specifier> [<additional_flags>...])
 #
 # This function will add additional compiler warning flags to your target based on your CMAKE_CXX_COMPILER_ID
 #
-# your_target_name - name of your target
-# property_specifier - set this to PUBLIC/PRIVATE/INTERFACE to set rules to what other taregts/dependencies these compiler flags will be applied to
-#                      behavior is the same as in `target_compile_options`
+# your_target_name - Name of your target
+# property_specifier - Set this to one of:  PUBLIC/PRIVATE/INTERFACE to set rules to what other taregts/dependencies these compiler
+#                      flags will be applied to behavior is the same as in `target_compile_options`
+# [<additional_flags>...] - An optional list of additional compiler flags you wish to add to your target (for example explicitly
+#                           disable some warnings that are not relevant to you or that are spammy)
 function(scm_add_brutal_compiler_options SCM_TARGET_NAME SCM_PROP_SPECIFIER)
+    set(SCM_ADDITIONAL_COMPILE_OPTIONS ${ARGN})
+
     message(STATUS "Adding brutal compile options to target: ${SCM_TARGET_NAME} with ${SCM_PROP_SPECIFIER} target property specifier")
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-        set(SCM_GCC_COMPILE_OPTIONS)
+    set(SCM_COMPILE_OPTIONS)
 
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message(STATUS "Detected GNU compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0.0")
             message(FATAL_ERROR "Error: GNU compiler version must be at least 9.0.0")
         endif()
 
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "9.0.0")
-            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_9_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_GCC_9_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
-            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_10_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_GCC_10_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
-            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_11_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_GCC_11_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
-            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_12_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_GCC_12_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
-            list(APPEND SCM_GCC_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_GCC_13_OPTIONS})
         endif()
-
-        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_GCC_COMPILE_OPTIONS})
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        set(SCM_CLANG_COMPILE_OPTIONS)
-
         message(STATUS "Detected Clang compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "10.0.0")
             message(FATAL_ERROR "Error: Clang compiler version must be at least 10.0.0")
         endif()
 
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "10.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_10_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "11.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_11_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_11_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "12.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_12_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_12_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "13.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_13_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_13_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "14.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_14_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_14_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "15.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_15_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_15_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_16_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_16_OPTIONS})
         endif()
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17.0.0")
-            list(APPEND SCM_CLANG_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_CLANG_17_OPTIONS})
         endif()
-
-        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_CLANG_COMPILE_OPTIONS})
     elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-        set(SCM_MSVC_COMPILE_OPTIONS)
-
         message(STATUS "Detected MSVC compiler, version: ${CMAKE_CXX_COMPILER_VERSION}")
-
-        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.0.0")
-            list(APPEND SCM_MSVC_COMPILE_OPTIONS ${SCM_MSVC_19_OPTIONS})
-        else()
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "19.0.0")
             message(FATAL_ERROR "Error: MSVC compiler version must be at least 19.0.0")
         endif()
 
-        target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_MSVC_COMPILE_OPTIONS})
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.0.0")
+            list(APPEND SCM_COMPILE_OPTIONS ${SCM_MSVC_19_OPTIONS})
+        endif()
     else()
         message("Compiler: Unknown or unsupported compiler")
     endif()
+
+    list(APPEND SCM_COMPILE_OPTIONS ${SCM_ADDITIONAL_COMPILE_OPTIONS})
+    target_compile_options(${SCM_TARGET_NAME} ${SCM_PROP_SPECIFIER} ${SCM_COMPILE_OPTIONS})
 endfunction()

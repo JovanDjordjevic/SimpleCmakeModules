@@ -5,7 +5,18 @@ include(static-analysis)
 scm_add_static_analysis_target(main ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(brutal-compiler-options)
-scm_add_brutal_compiler_options(main PUBLIC)
+
+set(WARNING_SUPPRESSORS)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND WARNING_SUPPRESSORS -Wno-unsafe-loop-optimizations)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND WARNING_SUPPRESSORS -Wno-padded -Wno-date-time)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    list(APPEND WARNING_SUPPRESSORS /wd4820 /wd4514 /wd4711 /wd5045)
+endif()
+
+scm_add_brutal_compiler_options(main PUBLIC ${WARNING_SUPPRESSORS})
 
 include(doxy)
 scm_create_docs_target(${CMAKE_SOURCE_DIR}/docs)
