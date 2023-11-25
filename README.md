@@ -200,7 +200,7 @@ This is a module for creating static analysis targets for your existing targets.
 
 The module provides the following function:
 
-- `scm_add_static_analysis_target(<your_target> <your_target_source_root_dir>)` - **your_target_source_root_dir** must be specified because internally, the module works by creating absolute paths to your source files and passing them to the compiler with analysis flags turned on
+- `scm_add_static_analysis_target(<your_target>)`
   
 Usage example:
 
@@ -225,7 +225,7 @@ add_executable(yourExe main.cpp src/lib.cpp)
 target_include_directories(yourExe src)
 
 include(static-analysis)
-scm_add_static_analysis_target(yourExe ${CMAKE_CURRENT_SOURCE_DIR})
+scm_add_static_analysis_target(yourExe)
 ...
 
 # This will create the `yourExe-static-analyze` target that can be manually built with:

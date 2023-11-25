@@ -2,7 +2,7 @@ add_executable(main main.cpp second.cpp lib1/lib1.cpp)
 target_include_directories(main PRIVATE lib1)
 
 include(static-analysis)
-scm_add_static_analysis_target(main ${CMAKE_CURRENT_SOURCE_DIR})
+scm_add_static_analysis_target(main)
 
 include(brutal-compiler-options)
 
