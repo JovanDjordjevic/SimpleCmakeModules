@@ -48,11 +48,15 @@ function(scm_add_static_analysis_target SCM_TARGET_NAME SCM_SOURCE_ROOT_DIR)
         list(APPEND SCM_TARGET_SOURCES_ABSOLUTE_PATHS ${SCM_SOURCE_ABS_PATH})
     endforeach()
 
-    message(STATUS "Creating `${SCM_TARGET_NAME}-static-analyze` target")
+    set(SCM_CUSTOM_TARGET_NAME ${SCM_TARGET_NAME}-static-analyze)
+
+    message(STATUS "Creating `${SCM_CUSTOM_TARGET_NAME}` target")
 
     add_custom_target(
-        ${SCM_TARGET_NAME}-static-analyze
+        ${SCM_CUSTOM_TARGET_NAME}
         COMMAND ${CMAKE_CXX_COMPILER} ${SCM_ANALYZER_OPTIONS} ${SCM_TARGET_SOURCES_ABSOLUTE_PATHS}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
+
+    set_target_properties(${SCM_CUSTOM_TARGET_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endfunction()

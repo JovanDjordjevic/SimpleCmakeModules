@@ -20,12 +20,16 @@ function(scm_create_grind_target SCM_TARGET_NAME)
     if(NOT SCM_KCACHEGRIND_EXECUTABLE)
         message(FATAL_ERROR "Error: 'kcachegrind' executable not found. Please install KCacheGrind.")
     endif()
+
+    set(SCM_CUSTOM_TARGET_NAME ${SCM_TARGET_NAME}-grind)
     
     add_custom_target(
-        ${SCM_TARGET_NAME}-grind
+        ${SCM_CUSTOM_TARGET_NAME}
         COMMAND ${SCM_VALGRIND_EXECUTABLE} --tool=callgrind --callgrind-out-file=${SCM_TARGET_NAME}.callgrind.out $<TARGET_FILE:${SCM_TARGET_NAME}>
         COMMAND ${SCM_KCACHEGRIND_EXECUTABLE} ${SCM_TARGET_NAME}.callgrind.out
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Opening Callgrind output with KCacheGrind"
     )
+
+    set_target_properties(${SCM_CUSTOM_TARGET_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endfunction()

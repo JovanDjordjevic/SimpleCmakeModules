@@ -7,11 +7,11 @@ scm_add_static_analysis_target(main ${CMAKE_CURRENT_SOURCE_DIR})
 include(brutal-compiler-options)
 scm_add_brutal_compiler_options(main PUBLIC)
 
-# include(doxy)
-# scm_create_docs_target(${CMAKE_SOURCE_DIR}/docs)
+include(doxy)
+scm_create_docs_target(${CMAKE_SOURCE_DIR}/docs)
 
-# include(grind)
-# scm_create_grind_target(main)
+include(grind)
+scm_create_grind_target(main)
 
 include(sanitize)
 scm_add_address_sanitizer_with_options(main PRIVATE)

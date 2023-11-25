@@ -16,11 +16,15 @@ function(scm_create_docs_target SCM_FOLDER_WITH_DOXYFILE)
     if(DOXYGEN_FOUND)
         message(STATUS "Creating `docs` target for generating doxygen documentation")
 
+        set(SCM_DOXYGEN_TARGET_NAME docs)
+
         add_custom_target(
-            docs
+            ${SCM_DOXYGEN_TARGET_NAME}
             ${DOXYGEN_EXECUTABLE}
             WORKING_DIRECTORY ${SCM_FOLDER_WITH_DOXYFILE}
         )
+
+        set_target_properties(${SCM_DOXYGEN_TARGET_NAME} PROPERTIES EXCLUDE_FROM_ALL TRUE)
     else()
         message(STATUS "Could not find doxygen executable. Cannot create `docs` target")
     endif()
